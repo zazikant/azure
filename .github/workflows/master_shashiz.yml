@@ -8,6 +8,11 @@ on:
   push:
     branches:
       - master
+    paths:
+        - 'slack/**'
+        - 'requirements.txt'
+        - 'startup.txt'
+
   workflow_dispatch:
 
 jobs:
