@@ -71,7 +71,7 @@ for page_num in range(1, 4):
 
 
 # # Write the locations to a CSV file
-with open("./shashi/locations.csv", "w", newline="") as csvfile:
+with open("/shashi/locations.csv", "w", newline="") as csvfile:
     fieldnames = ["location_id", "location_name"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
@@ -83,7 +83,7 @@ with open("./shashi/locations.csv", "w", newline="") as csvfile:
 #     repo_id=repo_id, model_kwargs={"temperature": 0.1, "max_new_tokens": 500}
 # )
 
-df = pd.read_csv("./shashi/locations.csv")
+df = pd.read_csv("/shashi/locations.csv")
 
 sdf = SmartDataframe(df, config={"llm": llm})
 

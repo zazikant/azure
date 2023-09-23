@@ -152,13 +152,13 @@ def handle_mentions(body, say):
 
     say("Sure, I'll get right on that!")
     # response = my_function(text)
-    response = draft_email(text)
+    # response = draft_email(text)
 
     # Upload the PNG file as an attachment
     try:
         response = client.files_upload(
             channels=body["event"]["channel"],
-            file="./exports/charts/temp_chart.png",
+            file="/exports/charts/temp_chart.png",
             title="Here is the chart you requested.",
         )
         print(response)
@@ -167,7 +167,9 @@ def handle_mentions(body, say):
 
 
   
+# Demo
 @flask_app.route("/slack/events", methods=["POST"])
+@require_slack_verification
 def slack_events():
     """
     Route for handling Slack events.
@@ -176,10 +178,12 @@ def slack_events():
     Returns:
         Response: The result of handling the request.
     """
+
     return handler.handle(request)
 
 # Run the Flask app
 if __name__ == "__main__":
+    logging.info("Flask app started")
     flask_app.run(host="0.0.0.0", port=8000)
     
     
