@@ -1,5 +1,14 @@
 import os
-from slack_sdk import WebClient
+import logging
+import time
+import sys
+import io
+import pprint
+import json
+import requests
+import csv
+import matplotlib.pyplot as plt
+
 from slack_sdk.errors import SlackApiError
 from slack_sdk.signature import SignatureVerifier
 from slack_bolt.adapter.flask import SlackRequestHandler
@@ -7,21 +16,20 @@ from slack_bolt import App
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, request, abort
 from functions import draft_email
-import logging
 from functools import wraps
-import time
-import sys
 
-
-import os, io
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
-from slack_bolt.adapter.flask import SlackRequestHandler
-from slack_bolt import App
-from dotenv import find_dotenv, load_dotenv
-from flask import Flask, request
-from functions import draft_email
-
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from openai import OpenAI
+from pandas import pd
+from pandasai import PandasAI
+from langchain import HuggingFaceHub
+from langchain.document_loaders import PyPDFLoader
 
 
 # Load environment variables from .env file
@@ -81,31 +89,6 @@ def verify_slack_request():
     )
 
 
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from dotenv import find_dotenv, load_dotenv
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-
-import os
-import openai
-import pprint
-import json
-import pandas as pd
-from pandasai import PandasAI
-from pandasai.llm.openai import OpenAI
-from langchain import HuggingFaceHub
-from langchain.document_loaders import PyPDFLoader
-from dotenv import load_dotenv
-
-import requests
-import csv
-
-import matplotlib.pyplot as plt
-import io
 
 
 def get_bot_user_id():
