@@ -164,6 +164,11 @@ def slack_events():
     return handler.handle(request)
 
 
+@flask_app.route("/slack/events", methods=["POST"])
+@require_slack_verification
+def slack_events():
+    return handler.handle(request)
+
 # Run the Flask app
 if __name__ == "__main__":
     flask_app.run(host="0.0.0.0", port=8000)
