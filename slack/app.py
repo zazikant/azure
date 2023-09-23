@@ -23,8 +23,6 @@ from openai import OpenAI
 from pandas import pd
 from pandasai import PandasAI
 
-
-#comment
 # Load environment variables from .env file.
 load_dotenv(find_dotenv())
 
