@@ -27,9 +27,9 @@ from pandasai import PandasAI
 load_dotenv(find_dotenv())
 
 # Set Slack API credentials
-SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
-SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
+SLACK_BOT_TOKEN = "xoxb-5911484664099-5905041780630-pT9S7SwxNDwg8J3xl94AOkSx"
+SLACK_SIGNING_SECRET = "77c6076b8871380b5cbd03e99fbe1392"
+SLACK_BOT_USER_ID = "SLACK_BOT_USER_ID"
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 HUGGINGFACEHUB_API_TOKEN = os.environ["HUGGINGFACEHUB_API_TOKEN"]
@@ -156,7 +156,7 @@ def slack_events():
 # Run the Flask app
 if __name__ == "__main__":
     logging.info("Flask app started")
-    flask_app.run()    
+    flask_app.run(host="0.0.0.0", port=8000)   
     
 #when you want to work with pandas, do that. pandas agent doesnt allow you to save files.
 #
