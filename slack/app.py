@@ -8,13 +8,24 @@ from flask import Flask, request
 from functions import draft_email
 
 # Load environment variables from .env file
-load_dotenv(find_dotenv())
+# load_dotenv(find_dotenv())
 
 # Set Slack API credentials
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
 
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+HUGGINGFACEHUB_API_TOKEN = os.environ["HUGGINGFACEHUB_API_TOKEN"]
+OPENAI_API_MODEL = os.environ["OPENAI_API_MODEL"]
+SERPER_API_KEY = os.environ["SERPER_API_KEY"]
+GOOGLE_CSE_ID = os.environ["GOOGLE_CSE_ID"]
+GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
+
+LANGCHAIN_TRACING_V2 = os.environ["LANGCHAIN_TRACING_V2"]
+LANGCHAIN_ENDPOINT = os.environ["LANGCHAIN_ENDPOINT"]
+LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
+LANGCHAIN_PROJECT = os.environ["LANGCHAIN_PROJECT"]
 
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
