@@ -25,7 +25,7 @@ from pandasai import PandasAI
 
 
 # Load environment variables from .env file
-# load_dotenv(find_dotenv())
+load_dotenv(find_dotenv())
 
 # Set Slack API credentials
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
