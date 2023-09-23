@@ -6,11 +6,13 @@ from slack_bolt.adapter.flask import SlackRequestHandler
 from slack_bolt import App
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, request, abort
-# from functions import draft_email
+from functions import draft_email
 import logging
 from functools import wraps
 import time
 import sys
+
+
 
 # Configure the logging level and format
 logging.basicConfig(
@@ -19,6 +21,7 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
+
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
 
@@ -26,6 +29,12 @@ load_dotenv(find_dotenv())
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
+LANGCHAIN_ENDPOINT = os.environ["LANGCHAIN_ENDPOINT"]
+LANGCHAIN_PROJECT = os.environ["LANGCHAIN_PROJECT"]
+LANGCHAIN_TRACING_V2 = os.environ["LANGCHAIN_TRACING_V2"]
+OPENAI_API_MODEL = os.environ["OPENAI_API_MODEL"]
 
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
@@ -36,32 +45,32 @@ flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
 
-def require_slack_verification(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not verify_slack_request():
-            abort(403)
-        return f(*args, **kwargs)
+# def require_slack_verification(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if not verify_slack_request():
+#             abort(403)
+#         return f(*args, **kwargs)
 
-    return decorated_function
+#     return decorated_function
 
 
-def verify_slack_request():
-    # Get the request headers
-    timestamp = request.headers.get("X-Slack-Request-Timestamp", "")
-    signature = request.headers.get("X-Slack-Signature", "")
+# def verify_slack_request():
+#     # Get the request headers
+#     timestamp = request.headers.get("X-Slack-Request-Timestamp", "")
+#     signature = request.headers.get("X-Slack-Signature", "")
 
-    # Check if the timestamp is within five minutes of the current time
-    current_timestamp = int(time.time())
-    if abs(current_timestamp - int(timestamp)) > 60 * 5:
-        return False
+#     # Check if the timestamp is within five minutes of the current time
+#     current_timestamp = int(time.time())
+#     if abs(current_timestamp - int(timestamp)) > 60 * 5:
+#         return False
 
-    # Verify the request signature
-    return signature_verifier.is_valid(
-        body=request.get_data().decode("utf-8"),
-        timestamp=timestamp,
-        signature=signature,
-    )
+#     # Verify the request signature
+#     return signature_verifier.is_valid(
+#         body=request.get_data().decode("utf-8"),
+#         timestamp=timestamp,
+#         signature=signature,
+#     )
 
 
 def get_bot_user_id():
@@ -94,6 +103,9 @@ def my_function(text):
     return response
 
 
+client = WebClient(token=SLACK_BOT_TOKEN)
+
+
 @app.event("app_mention")
 def handle_mentions(body, say):
     """
@@ -108,18 +120,26 @@ def handle_mentions(body, say):
 
     mention = f"<@{SLACK_BOT_USER_ID}>"
     text = text.replace(mention, "").strip()
-    logging.info("Received text: " + text.replace("\n", " "))
 
     say("Sure, I'll get right on that!")
     # response = my_function(text)
-    # response = draft_email(text)
-    # logging.info("Generated response: " + response.replace("\n", " "))
-    # say(response)
+    response = draft_email(text)
+
+    # Upload the PNG file as an attachment
+    try:
+        response = client.files_upload(
+            channels=body["event"]["channel"],
+            file="/exports/charts/temp_chart.png",
+            title="Here is the chart you requested.",
+        )
+        print(response)
+    except SlackApiError as e:
+        print(f"Error uploading file: {e.response['error']}")
 
 
 # Demo
 @flask_app.route("/slack/events", methods=["POST"])
-@require_slack_verification
+# @require_slack_verification
 def slack_events():
     """
     Route for handling Slack events.
