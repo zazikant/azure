@@ -102,9 +102,7 @@ def my_function(text):
     response = text.upper()
     return response
 
-
 client = WebClient(token=SLACK_BOT_TOKEN)
-
 
 @app.event("app_mention")
 def handle_mentions(body, say):
@@ -124,6 +122,8 @@ def handle_mentions(body, say):
     say("Sure, I'll get right on that!")
     # response = my_function(text)
     response = draft_email(text)
+    
+    say(response)
 
     # Upload the PNG file as an attachment
     try:
