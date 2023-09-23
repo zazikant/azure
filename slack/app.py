@@ -155,9 +155,7 @@ def slack_events():
 
 # Run the Flask app
 if __name__ == "__main__":
-    logging.info("Flask app started")
-    flask_app.run(host="0.0.0.0", port=8000)
-    
+    logging.info("Flask app started")    
     
 #when you want to work with pandas, do that. pandas agent doesnt allow you to save files.
 
