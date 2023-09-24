@@ -125,16 +125,16 @@ def handle_mentions(body, say):
     
     say(response)
 
-    # Upload the PNG file as an attachment
-    try:
-        response = client.files_upload(
-            channels=body["event"]["channel"],
-            file="/exports/charts/temp_chart.png",
-            title="Here is the chart you requested.",
-        )
-        print(response)
-    except SlackApiError as e:
-        print(f"Error uploading file: {e.response['error']}")
+    # # Upload the PNG file as an attachment
+    # try:
+    #     response = client.files_upload(
+    #         channels=body["event"]["channel"],
+    #         file="/exports/charts/temp_chart.png",
+    #         title="Here is the chart you requested.",
+    #     )
+    #     print(response)
+    # except SlackApiError as e:
+    #     print(f"Error uploading file: {e.response['error']}")
 
 
 # Demo

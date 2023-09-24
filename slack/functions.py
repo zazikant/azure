@@ -1,29 +1,26 @@
+import os
+import openai
+import pprint
+import json
+import requests
+import csv
+import io
+import matplotlib.pyplot as plt
+from IPython.core.display import HTML
+import pandas as pd
+from dotenv import find_dotenv, load_dotenv
+
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
-from dotenv import find_dotenv, load_dotenv
 from langchain.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
-
-
-import os
-import openai
-import pprint
-import json
-import pandas as pd
 from pandasai import PandasAI
 from pandasai.llm.openai import OpenAI
 from langchain import HuggingFaceHub
 from langchain.document_loaders import PyPDFLoader
-from dotenv import load_dotenv
-#hello
-import requests
-import csv
-
-import matplotlib.pyplot as plt
-import io
 
 load_dotenv(find_dotenv())
 
@@ -47,97 +44,110 @@ import pandas as pd
 from pandasai import SmartDataframe
 from pandasai.llm import OpenAI
 
-    
+ 
+
 def draft_email(user_input):
-    # Define the API endpoint URL and parameters
-    url = "http://13.232.224.37:8080/aurum/rest/v1/location/db/findall"
-    params = {
-        "project_id": 1,
-        "user_id": 640,
-        "token": "7efbfacb7556e57d0702",
-        "page_size": 5
-    }
+    
+    from langchain.document_loaders import DirectoryLoader, CSVLoader
 
-    #
+    loader = DirectoryLoader(
+        "/shashi", glob="*.csv", loader_cls=CSVLoader, show_progress=True
+    )
+    docs = loader.load()    
+    
+    
+    #textsplitter-----------------
 
-    llm = OpenAI()
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-    # # Make a GET request for each page and extract the desired fields
-    locations = []
-    for page_num in range(1, 4):
-        params["page_num"] = page_num
-        response = requests.get(url, params=params)
-        data = response.json()
-        for record in data["records"]:
-            location = {
-                "location_id": record["location_id"],
-                "location_name": record["location_name"]
-            }
-            locations.append(location)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=450,
+        chunk_overlap=2,
+    )
+
+    docs = text_splitter.split_documents(docs)
+    # print(docs[3].page_content)
+    #-----------------    
+    
+    from langchain.embeddings import OpenAIEmbeddings
+    openai_embeddings = OpenAIEmbeddings()
+
+    # from langchain.embeddings import HuggingFaceEmbeddings
+    # openai_embeddings = HuggingFaceEmbeddings(model_name="all-mpnet-base-v2")
+
+    #loading vectors into vector db-----------------
+
+    from langchain.vectorstores.faiss import FAISS
+    import pickle
+
+    #Very important - db below is used for similarity search and not been used by agents in tools
+
+    db = FAISS.from_documents(docs, openai_embeddings)
 
 
-    # # Write the locations to a CSV file
-    with open("/shashi/locations.csv", "w", newline="") as csvfile:
-        fieldnames = ["location_id", "location_name"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for location in locations:
-            writer.writerow(location)
+    import pickle
 
-    # repo_id = "tiiuae/falcon-7b-instruct"  # See https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads for some other options
-    # llm = HuggingFaceHub(
-    #     repo_id=repo_id, model_kwargs={"temperature": 0.1, "max_new_tokens": 500}
-    # )
+    with open("db.pkl", "wb") as f:
+        pickle.dump(db, f)
+        
+    with open("db.pkl", "rb") as f:
+        db = pickle.load(f)
+        
+    query = user_input
+    docs = db.similarity_search(query, k=8)
 
-    df = pd.read_csv("/shashi/locations.csv")
+    # HTML(f'<div style="width:50%">{docs[0].page_content}</div>')
+    # print(docs[0].page_content)
 
-    sdf = SmartDataframe(df, config={"llm": llm})
 
-    sdf.chat(user_input)
+    import os
+    import openai
+    from langchain.llms import OpenAI
+    from langchain.chains import LLMChain, SequentialChain
+    from dotenv import load_dotenv, find_dotenv
+    from langchain.prompts import ChatPromptTemplate
+    from langchain import HuggingFaceHub
+    from langchain import PromptTemplate, LLMChain
+    from langchain.chat_models import ChatOpenAI
+    from langchain.output_parsers import ResponseSchema
+    from langchain.output_parsers import StructuredOutputParser
+    from langchain.memory import ConversationSummaryBufferMemory
 
-    response = sdf.last_code_generated.__str__()
+
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7)
+
+
+    # template = """
+    # you are a pediatric dentist and you are writing a key features serial wise for following information: 
+
+    # text: {context}
+    # """
+
+    #blog post
+    template = """
+    You are a SEO expert having expertise in creating landing pages. The landing page should should effectively capture the key points, insights, and information from the Context.
+
+    Focus on maintaining a coherent flow and using proper grammar and language.
+
+    Incorporate relevant headings, subheadings, and bullet points to organize the content.
+
+    Ensure that the tone of the blog post is engaging and informative, catering to {target_audience} audience.
+
+    Feel free to enhance the transcript by adding additional context, examples, and explanations where necessary.
+
+    The goal is to convert context into a polished and valuable written resource while maintaining accuracy and coherence.
+
+    text: {context}
+
+    """
+    target_audience = """Age group of 35-45 years old people, who are looking for BIM services"""
+
+    prompt  = PromptTemplate(
+        input_variables=["context", "target_audience"],
+        template=template
+    )
+
+    chain = LLMChain(llm=llm, prompt=prompt, output_key= "testi")
+    response = chain.run({"context": docs, "target_audience": target_audience})
 
     return response
-
-# agent = create_pandas_dataframe_agent(llm, df, verbose=True)
-
-# response = agent.run("only write the dataframe code logic for" + "what are top 5 location_names with highest occurence" + "strictly write the code logic")
-
-# print(response)
-# # Save the plot as a PNG file
-
-# # Extract the code logic from the response
-# code_logic = response['output']
-
-# filtered_df = eval(response)
-
-# print(filtered_df)
-
-   
-
-
-
-    # Apply the code logic to the entire dataframe
-    # filtered_df = eval(code_logic)
-    
-    # Print the filtered dataframe
-    # print(filtered_df)    
-
-    
-    # Assign the filtered dataframe to the response variable and return it
-    # response = filtered_df
-    # return response
-
-    
-# #     # Generate a bar plot
-#     plt.bar(df["location_id"], df["location_name"])
-#     plt.xlabel("Year")
-#     plt.ylabel("Time")
-#     plt.title("Winning Boston Marathon Times")
-
-#     # Save the plot as a PNG file
-#     plt.savefig("./shashi/plot.png")  
-    
-#     return response # Return the response and the file name
-
-# #do bar plot of top 3 location_names
