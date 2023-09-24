@@ -50,7 +50,7 @@ def draft_email(user_input):
     from langchain.document_loaders import DirectoryLoader, CSVLoader
 
     loader = DirectoryLoader(
-        "/shashi", glob="*.csv", loader_cls=CSVLoader, show_progress=True
+        "./shashi", glob="**/*.csv", loader_cls=CSVLoader, show_progress=True
     )
     docs = loader.load()    
     
