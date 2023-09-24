@@ -150,3 +150,4 @@ def draft_email(user_input):
     response = chain.run({"context": docs, "target_audience": target_audience})
 
     return response
+#G
