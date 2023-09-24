@@ -1,3 +1,4 @@
+import os
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from dotenv import find_dotenv, load_dotenv
@@ -8,6 +9,13 @@ from langchain.prompts.chat import (
 )
 
 load_dotenv(find_dotenv())
+
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
+LANGCHAIN_ENDPOINT = os.environ["LANGCHAIN_ENDPOINT"]
+LANGCHAIN_PROJECT = os.environ["LANGCHAIN_PROJECT"]
+LANGCHAIN_TRACING_V2 = os.environ["LANGCHAIN_TRACING_V2"]
+OPENAI_API_MODEL = os.environ["OPENAI_API_MODEL"]
 
 
 def draft_email(user_input, name="Dave"):
