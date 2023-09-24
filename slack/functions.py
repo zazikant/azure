@@ -43,7 +43,6 @@ import pandas as pd
 
 from pandasai import SmartDataframe
 from pandasai.llm import OpenAI
-
  
 
 def draft_email(user_input):
