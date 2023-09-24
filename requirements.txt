@@ -1,3 +1,4 @@
+pandas
 google-api-python-client # Google API
 google-search-results # SerpAPI
 youtube-transcript-api
@@ -18,7 +19,9 @@ pandasai
 openai
 python-dotenv
 requests
+requests-file
 matplotlib
+matplotlib-inline
 ipykernel==6.24.0
 ipython==8.14.0
 ipython-genutils==0.2.0
