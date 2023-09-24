@@ -87,7 +87,7 @@ def draft_email(user_input):
 
     sdf.chat(user_input)
 
-    response = print(sdf.last_code_generated).__str__()
+    response = sdf.last_code_generated.__str__()
 
     return response
 
