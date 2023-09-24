@@ -16,6 +16,9 @@ urllib3<2
 huggingface_hub
 pandasai
 openai
+python-dotenv
+requests
+matplotlib
 ipykernel==6.24.0
 ipython==8.14.0
 ipython-genutils==0.2.0
