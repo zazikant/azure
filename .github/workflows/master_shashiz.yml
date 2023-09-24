@@ -9,7 +9,7 @@ on:
     branches:
       - master
     paths:
-        - 'slack/app.py'
+        - 'slack/**'
         - 'requirements.txt'
         - 'startup.txt'
         - 'functions.py'
