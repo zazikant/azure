@@ -8,11 +8,6 @@ on:
   push:
     branches:
       - master
-    paths:
-        - 'slack/**'
-        - 'requirements.txt'
-        - 'startup.txt'
-
   workflow_dispatch:
 
 jobs:
@@ -58,11 +53,6 @@ jobs:
         with:
           name: python-app
           path: .
-
-      - name: Log in to Azure CLI using service principal
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
@@ -70,4 +60,4 @@ jobs:
         with:
           app-name: 'myshashi'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_627294A3618F492095AF62A10A02303E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_975899DA202F407B851CBB0AEB398263 }}
