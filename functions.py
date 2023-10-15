@@ -7,8 +7,6 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 
-#hello
-
 load_dotenv(find_dotenv())
 
 
