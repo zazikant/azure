@@ -78,7 +78,6 @@ def get_bot_user_id():
     except SlackApiError as e:
         print(f"Error: {e}")
 
-
 def my_function(text):
     """
     Custom function to process the text and return a response.
