@@ -19,7 +19,6 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-# Load environment variables from .env file
 load_dotenv(find_dotenv())
 
 # Set Slack API credentials
