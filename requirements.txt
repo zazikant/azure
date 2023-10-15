@@ -1,3 +1,6 @@
+Flask
+gunicorn
+urllib3
 torch>=1.4
 diffusers==0.10.2
 transformers
@@ -10,7 +13,6 @@ astor
 ftfy
 accelerate
 pyngrok==4.1.1
-flask_ngrok
 openai
 python-dotenv
 langchain
