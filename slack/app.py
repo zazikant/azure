@@ -12,6 +12,13 @@ from functools import wraps
 import time
 import sys
 
+# Configure the logging level and format
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout,
+)
+
 load_dotenv(find_dotenv())
 
 # Set Slack API credentials
