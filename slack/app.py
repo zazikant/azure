@@ -19,6 +19,7 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
+# Load environment variables from .env file
 load_dotenv(find_dotenv())
 
 # Set Slack API credentials
@@ -28,54 +29,11 @@ SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
 
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
-signature_verifier = SignatureVerifier(SLACK_SIGNING_SECRET)
 
 # Initialize the Flask app
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
-
-def require_slack_verification(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not verify_slack_request():
-            abort(403)
-        return f(*args, **kwargs)
-
-    return decorated_function
-
-
-def verify_slack_request():
-    # Get the request headers
-    timestamp = request.headers.get("X-Slack-Request-Timestamp", "")
-    signature = request.headers.get("X-Slack-Signature", "")
-
-    # Check if the timestamp is within five minutes of the current time
-    current_timestamp = int(time.time())
-    if abs(current_timestamp - int(timestamp)) > 60 * 5:
-        return False
-
-    # Verify the request signature
-    return signature_verifier.is_valid(
-        body=request.get_data().decode("utf-8"),
-        timestamp=timestamp,
-        signature=signature,
-    )
-
-
-def get_bot_user_id():
-    """
-    Get the bot user ID using the Slack API.
-    Returns:
-        str: The bot user ID.
-    """
-    try:
-        # Initialize the Slack client with your bot token
-        slack_client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
-        response = slack_client.auth_test()
-        return response["user_id"]
-    except SlackApiError as e:
-        print(f"Error: {e}")
 
 def my_function(text):
     """
@@ -117,7 +75,6 @@ def handle_mentions(body, say):
 
 # Demo
 @flask_app.route("/slack/events", methods=["POST"])
-@require_slack_verification
 def slack_events():
     """
     Route for handling Slack events.
