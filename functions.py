@@ -13,8 +13,6 @@ from pandasai.llm.openai import OpenAI
 from dotenv import load_dotenv
 import re
 
-#HELLO
-
 import requests
 import csv
 

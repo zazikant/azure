@@ -29,8 +29,6 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
 
-signature_verifier = SignatureVerifier(SLACK_SIGNING_SECRET)
-
 # Initialize the Flask app
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
