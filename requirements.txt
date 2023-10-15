@@ -1,21 +1,3 @@
-torch>=1.4
-diffusers==0.10.2
-transformers
-scipy
-ipython==8.13.1
-sqlalchemy>=2.0
-astor
-ftfy
-accelerate
-pyngrok==4.1.1
-openai
-python-dotenv
-langchain
-pypdf
-pandas==1.5.3
-pandasai==1.1
-tiktoken
-faiss-cpu
 slack-sdk
 slack-bolt
 Flask
@@ -23,3 +5,4 @@ gunicorn
 urllib3
 python-dotenv
 openai
+langchain
