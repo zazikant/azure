@@ -14,7 +14,6 @@ import sys
 import json
 import requests
 
-#hello2
 load_dotenv(find_dotenv())
 
 # Set Slack API credentials
