@@ -9,9 +9,10 @@ on:
     branches:
       - master
     paths:
-        - 'slack/**'
         - 'requirements.txt'
         - 'startup.txt'
+        - 'app.py'
+        - 'functions.py'
   workflow_dispatch:
 
 jobs:
