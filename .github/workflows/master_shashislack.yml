@@ -9,10 +9,10 @@ on:
     branches:
       - master
     paths:
-        - 'requirements.txt'
-        - 'startup.txt'
-        - 'app.py'
-        - 'functions.py'
+      - 'requirements.txt'
+      - 'startup.txt'
+      - 'app.py'
+      - 'functions.py'
   workflow_dispatch:
 
 jobs:
@@ -58,6 +58,11 @@ jobs:
         with:
           name: python-app
           path: .
+
+      - name: Clean Up Files #cleans up files
+        run: |
+          # Add commands to clean up files here
+          rm -rf ./*
 
       - name: Log in to Azure CLI using service principal
         uses: azure/login@v1
