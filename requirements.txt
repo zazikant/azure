@@ -1,8 +1,8 @@
-slack-sdk
-slack-bolt
+python-dotenv
+langchain
+openai
+slack-sdk 
+slack-bolt 
 Flask
 gunicorn
 urllib3
-python-dotenv
-openai
-langchain
