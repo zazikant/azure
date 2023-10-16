@@ -11,6 +11,8 @@ import logging
 from functools import wraps
 import time
 import sys
+import json
+import requests
 
 
 # Load environment variables from .env file
@@ -20,6 +22,12 @@ load_dotenv(find_dotenv())
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+# LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
+# LANGCHAIN_ENDPOINT = os.environ["LANGCHAIN_ENDPOINT"]
+# LANGCHAIN_PROJECT = os.environ["LANGCHAIN_PROJECT"]
+# LANGCHAIN_TRACING_V2 = os.environ["LANGCHAIN_TRACING_V2"]
+# OPENAI_API_MODEL = os.environ["OPENAI_API_MODEL"]
 
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
@@ -102,13 +110,29 @@ def handle_mentions(body, say):
 
     mention = f"<@{SLACK_BOT_USER_ID}>"
     text = text.replace(mention, "").strip()
-    logging.info("Received text: " + text.replace("\n", " "))
 
     say("Sure, I'll get right on that!")
     # response = my_function(text)
-    response = draft_email(text)
-    logging.info("Generated response: " + response.replace("\n", " "))
-    say(response)
+    
+    # Extract the email from the text
+    email, response = draft_email(text)
+    
+    # Make the POST request
+    url = "https://hook.us1.make.com/ohyonocw701n4ynie637qcm3roe3yrhn"
+    headers = {"Content-Type": "application/json"}
+    payload = {"email": email, "response": response}
+    data = json.dumps(payload)
+    # data = {"response": response}
+    
+    # post_response = requests.post(url, headers=headers, json=data)
+    
+    post_response = requests.post(url, headers=headers, data=data)
+
+    # Check the response status code
+    if post_response.status_code == 200:
+        say("POST request successful")
+    else:
+        say("POST request failed")
 
 
 # Demo

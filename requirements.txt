@@ -6,3 +6,17 @@ slack-bolt
 Flask
 gunicorn
 urllib3
+torch>=1.4
+diffusers==0.10.2
+transformers
+scipy
+ipython==8.13.1
+sqlalchemy>=2.0
+astor
+ftfy
+accelerate
+pypdf
+pandas==1.5.3
+pandasai==1.1
+tiktoken
+faiss-cpu
