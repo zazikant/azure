@@ -11,9 +11,9 @@ on:
     paths:
     - 'requirements.txt'
     - 'startup.txt'
-    - 'app.py'
+    - 'slack/**'
     - 'functions.py'
-    
+
   workflow_dispatch:
 
 jobs:
